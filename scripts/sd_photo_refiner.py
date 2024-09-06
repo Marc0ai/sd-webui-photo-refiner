@@ -42,7 +42,7 @@ class Script(scripts.Script):
                 mean_g = np.mean(im[:, :, 1])
                 mean_b = np.mean(im[:, :, 2])
 
-                target_r, target_g, target_b = 128, 128, 123
+                target_r, target_g, target_b = 118, 118, 113
 
                 r_factor = target_r / mean_r
                 g_factor = target_g / mean_g
