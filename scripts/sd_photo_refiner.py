@@ -96,7 +96,8 @@ class Script(scripts.Script):
                 grain = np.clip(grain * 255, 0, 255).astype(np.uint8)
                 grain_img = Image.fromarray(grain).convert('L')
                 grain_img = grain_img.resize((img.width, img.height), Image.NEAREST)
-                img = Image.blend(img.convert('RGB'), grain_img.convert('RGB'), alpha=0.02)
+                grain_img = grain_img.filter(ImageFilter.GaussianBlur(radius=1))
+                img = Image.blend(img.convert('RGB'), grain_img.convert('RGB'), alpha=0.04)
 
             return img
 
