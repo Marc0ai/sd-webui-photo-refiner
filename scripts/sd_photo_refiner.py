@@ -17,20 +17,25 @@ class Script(scripts.Script):
         return True
 
     def ui(self, is_img2img):
-        blur_intensity = gr.Slider(minimum=0, maximum=5, step=0.1, value=0, label="Blur")
-        sharpen_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Sharpening")
-        chromatic_aberration = gr.Slider(minimum=0, maximum=3, step=1, value=0, label="Chromatic Aberration")
-        saturation_intensity = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Saturation")
-        contrast_intensity = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Contrast")
-        brightness_intensity = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Brightness")
-        highlights_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Highlights")
-        shadows_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Shadows")
-        auto_rgb = gr.Checkbox(value=False, label="Automatic Tones")
-        film_grain = gr.Checkbox(value=False, label="Filmic Grain")
-        return [auto_rgb, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
+        with gr.Blocks() as demo:  
+            blur_intensity = gr.Slider(minimum=0, maximum=5, step=0.1, value=0, label="Blur")
+            sharpen_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Sharpening")
+            chromatic_aberration = gr.Slider(minimum=0, maximum=3, step=1, value=0, label="Chromatic Aberration")
+            saturation_intensity = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Saturation")
+            contrast_intensity = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Contrast")
+            brightness_intensity = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Brightness")
+            highlights_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Highlights")
+            shadows_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Shadows")
+            film_grain = gr.Checkbox(value=False, label="Filmic Grain")
+            auto_rgb = gr.Checkbox(value=False, label="RGB Channels")
+            with gr.Row():
+                red_bar = gr.Slider(minimum=0, maximum=150, step=1, value=100, label="Red")
+                green_bar = gr.Slider(minimum=0, maximum=150, step=1, value=100, label="Green")
+                blue_bar = gr.Slider(minimum=0, maximum=150, step=1, value=100, label="Blue")
+        return [auto_rgb, red_bar, green_bar, blue_bar, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
 
-    def run(self, p, auto_rgb, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain):
-        def apply_effects(im, auto_rgb, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
+    def run(self, p, auto_rgb, red_bar, green_bar, blue_bar, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain):
+        def apply_effects(im, auto_rgb, red_bar, green_bar, blue_bar, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
             if isinstance(im, np.ndarray):
                 img = Image.fromarray(im)
             else:
@@ -42,7 +47,7 @@ class Script(scripts.Script):
                 mean_g = np.mean(im[:, :, 1])
                 mean_b = np.mean(im[:, :, 2])
 
-                target_r, target_g, target_b = 118, 118, 113
+                target_r, target_g, target_b = red_bar, green_bar, blue_bar
 
                 r_factor = target_r / mean_r
                 g_factor = target_g / mean_g
@@ -104,7 +109,7 @@ class Script(scripts.Script):
         proc = process_images(p)
 
         for i in range(len(proc.images)):
-            proc.images[i] = apply_effects(proc.images[i], auto_rgb, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain)
+            proc.images[i] = apply_effects(proc.images[i], auto_rgb, red_bar, green_bar, blue_bar, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain)
             images.save_image(proc.images[i], p.outpath_samples, "",
                               proc.seed + i, proc.prompt, opts.samples_format, info=proc.info, p=p)
 
