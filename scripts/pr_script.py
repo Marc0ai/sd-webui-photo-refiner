@@ -38,9 +38,6 @@ class Script(scripts.Script):
                 highlights_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Highlights")
                 shadows_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Shadows")
                 temperature_value = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Temperature")
-                red_intensity = gr.Slider(minimum=0, maximum=2, step=0.1, value=1, label="Red")
-                green_intensity = gr.Slider(minimum=0, maximum=2, step=0.1, value=1, label="Green")
-                blue_intensity = gr.Slider(minimum=0, maximum=2, step=0.1, value=1, label="Blue")
                 film_grain = gr.Checkbox(value=False, label="Filmic Grain")
                 face_sharp_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Face Enhancer (Experimental)")
             
@@ -50,9 +47,9 @@ class Script(scripts.Script):
             
             pr_enabled.change(fn=update_title, inputs=pr_enabled, outputs=accordion) 
             
-        return [pr_enabled, face_sharp_intensity, red_intensity, green_intensity, blue_intensity, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
+        return [pr_enabled, face_sharp_intensity, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
 
-    def apply_effects(self, im, pr_enabled, face_sharp_intensity, red_intensity, green_intensity, blue_intensity, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
+    def apply_effects(self, im, pr_enabled, face_sharp_intensity, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
        
         if isinstance(im, np.ndarray):
             img = Image.fromarray(im)
@@ -137,38 +134,10 @@ class Script(scripts.Script):
             grain_img = grain_img.filter(ImageFilter.GaussianBlur(radius=0.7))
             img = Image.blend(img.convert('RGB'), grain_img.convert('RGB'), alpha=0.025)
             
-        if red_intensity != 0 or green_intensity != 0 or blue_intensity != 0:
-            pixels = np.array(img)
-            
-            mask_red = np.zeros((pixels.shape[0], pixels.shape[1]), dtype=np.float32)
-            mask_green = np.zeros((pixels.shape[0], pixels.shape[1]), dtype=np.float32)
-            mask_blue = np.zeros((pixels.shape[0], pixels.shape[1]), dtype=np.float32)
-            
-            r, g, b = pixels[..., 0], pixels[..., 1], pixels[..., 2]
-            max_color = np.maximum(r, np.maximum(g, b))
-            
-            mask_red = np.where((r > g + 1.5) & (r > b + 1.5), (r - np.minimum(g, b)) / max_color, 0)
-            mask_green = np.where((g > r + 1.5) & (g > b + 1.5), (g - np.minimum(r, b)) / max_color, 0)
-            mask_blue = np.where((b > r + 1.5) & (b > g + 1.5), (b - np.minimum(r, g)) / max_color, 0)
-            
-            mask_red = gaussian_filter(mask_red, sigma=10)
-            mask_green = gaussian_filter(mask_green, sigma=10)
-            mask_blue = gaussian_filter(mask_blue, sigma=10)
-            
-            mask_red = np.clip(mask_red, 0, 1)
-            mask_green = np.clip(mask_green, 0, 1)
-            mask_blue = np.clip(mask_blue, 0, 1)
-            
-            r = np.clip(r * (1 + (red_intensity - 1) * mask_red), 0, 255)
-            g = np.clip(g * (1 + (green_intensity - 1) * mask_green), 0, 255)
-            b = np.clip(b * (1 + (blue_intensity - 1) * mask_blue), 0, 255)
-            
-            adjusted_pixels = np.stack([r, g, b], axis=-1).astype(np.uint8)
-            img = Image.fromarray(adjusted_pixels)
     
         return img
 
-    def postprocess(self, p, processed, pr_enabled, face_sharp_intensity, red_intensity, green_intensity, blue_intensity, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, *args):
+    def postprocess(self, p, processed, pr_enabled, face_sharp_intensity, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, *args):
 
         if pr_enabled:
 
@@ -185,10 +154,7 @@ class Script(scripts.Script):
                 processed_image = self.apply_effects(
                     processed_image,
                     pr_enabled,
-                    face_sharp_intensity, 
-                    red_intensity,
-                    green_intensity,
-                    blue_intensity,
+                    face_sharp_intensity,
                     temperature_value, 
                     blur_intensity, 
                     sharpen_intensity, 
