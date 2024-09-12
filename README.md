@@ -18,4 +18,4 @@ A simple script that allows you to give an extra touch of quality to the generat
 ---
 A small example of the "potential" of the extension, in this case I used ReActor to insert a well-made face, after which I increased the detail with "Face Enhancer".
 
-<img src="https://i.imgur.com/UTaLFTS.png" alt="Original" width="500"/> <img src="https://i.imgur.com/YTj7Lca.png" alt="After Photo Refiner" width="500"/>
+<img src="https://i.imgur.com/UTaLFTS.png" alt="Original" width="200"/> <img src="https://i.imgur.com/YTj7Lca.png" alt="After Photo Refiner" width="200"/>
