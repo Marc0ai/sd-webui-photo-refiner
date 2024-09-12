@@ -13,6 +13,7 @@ A simple script that allows you to give an extra touch of quality to the generat
 - Highlights
 - Shadows
 - Temperature
+- Red\Green\Blue Regolation
 - Filmic Grain
 - (EXPERIMENTAL) Face Enhancer - I added this function only because, as a ReActor user, I noticed that very often the face of the resulting images is slightly more "blurred" than the rest of the image, so thanks to this slider, it is possible to add a bit of sharpness only in the facial area, in order to make everything more homogeneous.
 ---
