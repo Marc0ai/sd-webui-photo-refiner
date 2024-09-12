@@ -17,9 +17,9 @@ class Script(scripts.Script):
     
     def title(self, enabled=False):
         if enabled:
-            return "Photo Refiner - Enabled - TEST"
+            return "Photo Refiner - Enabled"
         else:
-            return "Photo Refiner - TEST"
+            return "Photo Refiner"
 
     def show(self, is_img2img):
         return scripts.AlwaysVisible
@@ -45,7 +45,7 @@ class Script(scripts.Script):
                 face_sharp_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Face Enhancer (Experimental)")
             
             def update_title(pr_enabled):
-                new_title = "Photo Refiner - Enabled - TEST" if pr_enabled else "Photo Refiner - TEST"
+                new_title = "Photo Refiner - Enabled" if pr_enabled else "Photo Refiner"
                 return gr.update(label=new_title)
             
             pr_enabled.change(fn=update_title, inputs=pr_enabled, outputs=accordion) 
