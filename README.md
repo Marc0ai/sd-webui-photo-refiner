@@ -1,6 +1,8 @@
 # Photo Refiner extension for [A1111 WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) / [Forge WebUI](https://github.com/lllyasviel/stable-diffusion-webui-forge)
 A simple script that allows you to give an extra touch of quality to the generations, adding various filters and photographic effects capable of making the images cooler. Enjoy 👍
 
+# For now the effects are only applied to single generations, in the case of multiple generations, the script does not apply, I'm working on fixing it...
+
 ---
 ### Available effects:
 
