@@ -27,7 +27,7 @@ class Script(scripts.Script):
     def ui(self, is_img2img):
                         
         with gr.Blocks() as demo:  
-            with gr.Accordion(label=self.title(), elem_id="photo-refinerT", open=False) as accordion:
+            with gr.Accordion(label=self.title(), elem_id="photo-refiner", open=False) as accordion:
                 pr_enabled = gr.Checkbox(value=False, label="Enable")
                 blur_intensity = gr.Slider(minimum=0, maximum=5, step=0.1, value=0, label="Blur")
                 sharpen_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Sharpening")
