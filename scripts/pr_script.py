@@ -63,7 +63,7 @@ class Script(scripts.Script):
                 shadows_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Shadows")
                 temperature_value = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Temperature")
                 film_grain = gr.Checkbox(value=False, label="Filmic Grain")
-                face_sharp_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Face Sharpening (Experimental)")
+                face_sharp_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Face Enhancer (Experimental)")
             
             def update_title(pr_enabled):
                 new_title = "Photo Refiner - Enabled" if pr_enabled else "Photo Refiner"
