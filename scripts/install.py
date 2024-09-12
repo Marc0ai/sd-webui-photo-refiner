@@ -30,20 +30,24 @@ def is_installed(
         print(f"Error: {e}")
         return False
 
-if not is_installed("dlib"):
-    with open(req_file) as file:
-        install_count = 0
-        for package in file:
+
+with open(req_file) as file:
+    install_count = 0
+    for package in file:
+        package = package.strip()
+        if package:
             package_version = None
             strict = True
             try:
-                package = package.strip()
                 if "==" in package:
-                    package_version = package.split('==')[1]
+                    package_name, package_version = package.split('==')
                 elif ">=" in package:
-                    package_version = package.split('>=')[1]
+                    package_name, package_version = package.split('>=')
                     strict = False
-                if not is_installed(package, package_version, strict):
+                else:
+                    package_name = package
+
+                if not is_installed(package_name, package_version, strict):
                     install_count += 1
                     pip_install(package)
             except Exception as e:
