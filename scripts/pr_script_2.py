@@ -167,4 +167,4 @@ class Script(scripts.Script):
                     film_grain
                 )
                 
-                processed.images[0] = np.array(processed_image)
+                processed.images[i] = np.array(processed_image)
