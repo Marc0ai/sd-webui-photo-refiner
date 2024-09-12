@@ -104,11 +104,11 @@ class Script(scripts.Script):
             img_np = np.array(img).astype(np.float32) / 255.0
           
             if temperature_value > 0:
-                img_np[..., 2] += temperature_value * 0.1
-                img_np[..., 1] += temperature_value * 0.05
+                img_np[..., 2] += temperature_value * 0.025
+                img_np[..., 1] += temperature_value * 0.025
             else:
-                img_np[..., 2] += temperature_value * 0.1
-                img_np[..., 0] -= temperature_value * 0.1
+                img_np[..., 2] += temperature_value * 0.025
+                img_np[..., 0] -= temperature_value * 0.025
                 
             img_np = np.clip(img_np, 0, 1)
             img = Image.fromarray((img_np * 255).astype(np.uint8))
