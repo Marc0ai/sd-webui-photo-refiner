@@ -22,6 +22,6 @@ A simple script that allows you to give an extra touch of quality to the generat
 
 #### Combinations Examples
 
-<img src="https://i.imgur.com/aafcTw0.png" width="200"/>  <img src="https://i.imgur.com/1cds2s6.png" width="200"/>  <img src="https://i.imgur.com/SzPlVUM.png" width="200"/> 
+<img src="https://i.imgur.com/aafcTw0.png" width="200"/> <img src="https://i.imgur.com/1cds2s6.png" width="200"/> <img src="https://i.imgur.com/SzPlVUM.png" width="200"/> 
 
 
