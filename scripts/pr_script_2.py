@@ -106,7 +106,7 @@ class Script(scripts.Script):
           
             if temperature_value > 0:
                 img_np[..., 2] += temperature_value * 0.04
-                img_np[..., 1] += temperature_value * 0.04
+                img_np[..., 1] += temperature_value * 0.1
             else:
                 img_np[..., 2] += temperature_value * 0.04
                 img_np[..., 0] -= temperature_value * 0.04
@@ -191,4 +191,3 @@ class Script(scripts.Script):
                 )
 
                 processed.images[i] = np.array(processed_image)
-                
