@@ -157,5 +157,5 @@ class Script(scripts.Script):
 
             for i, img_array in enumerate(processed.images):
                 img = Image.fromarray(img_array)
-                file_path = os.path.join(output_dir, f"output_image_{i}.png")
+                file_path = os.path.join(output_dir, f"refined_image_{i}.png")
                 img.save(file_path)
