@@ -7,11 +7,9 @@ from modules.shared import opts, cmd_opts, state
 from scipy.ndimage import gaussian_filter
 
 import cv2
-import dlib
 import numpy as np
 from PIL import Image, ImageEnhance, ImageChops, ImageFilter, ImageDraw
 
-detector = dlib.get_frontal_face_detector()
 
 class Script(scripts.Script):
 
@@ -38,7 +36,6 @@ class Script(scripts.Script):
                 highlights_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Highlights")
                 shadows_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Shadows")
                 temperature_value = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Temperature")
-                face_sharp_intensity = gr.Slider(minimum=0, maximum=10, step=0.1, value=0, label="Face Enhancer (Experimental)")
                 film_grain = gr.Checkbox(value=False, label="Filmic Grain")
 
                 reset_button = gr.Button("Reset sliders")
@@ -66,40 +63,19 @@ class Script(scripts.Script):
                 brightness_intensity,
                 highlights_intensity,
                 shadows_intensity,
-                temperature_value,
-                face_sharp_intensity
+                temperature_value
             ])
 
             pr_enabled.change(fn=update_title, inputs=pr_enabled, outputs=accordion)
 
-        return [pr_enabled, face_sharp_intensity, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
+        return [pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
 
-    def apply_effects(self, im, pr_enabled, face_sharp_intensity, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
+    def apply_effects(self, im, pr_enabled, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
 
         if isinstance(im, np.ndarray):
             img = Image.fromarray(im)
         else:
-            img = im
-
-        if face_sharp_intensity > 0:
-            gray = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2GRAY)
-            faces = detector(gray)
-
-            mask = Image.new("L", img.size, 0)
-
-            for face in faces:
-                left, top, right, bottom = (face.left(), face.top(), face.right(), face.bottom())
-                mask_ellipse = Image.new("L", img.size, 0)
-                mask_draw = ImageDraw.Draw(mask_ellipse)
-                mask_draw.ellipse([left, top, right, bottom], fill=255)
-                
-                mask_ellipse = mask_ellipse.filter(ImageFilter.GaussianBlur(40))
-                mask = ImageChops.add(mask, mask_ellipse)
-
-            enhancer = ImageEnhance.Sharpness(img)
-            sharp_img = enhancer.enhance(face_sharp_intensity)
-            
-            img = Image.composite(sharp_img, img, mask)    
+            img = im  
 
         if temperature_value != 0:
             img_np = np.array(img).astype(np.float32) / 255.0
@@ -161,7 +137,7 @@ class Script(scripts.Script):
 
         return img
 
-    def postprocess(self, p, processed, pr_enabled, face_sharp_intensity, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, *args):
+    def postprocess(self, p, processed, pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, *args):
 
         if pr_enabled:
 
@@ -177,7 +153,6 @@ class Script(scripts.Script):
                 processed_image = self.apply_effects(
                     processed_image,
                     pr_enabled,
-                    face_sharp_intensity,
                     temperature_value,
                     blur_intensity,
                     sharpen_intensity,
