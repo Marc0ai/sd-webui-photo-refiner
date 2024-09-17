@@ -17,7 +17,6 @@ A simple script that allows you to give an extra touch of quality to the generat
 - [Shadows](https://i.imgur.com/HiGoTtV.png)
 - [Temperature](https://i.imgur.com/T61MhiW.png)
 - [Filmic Grain](https://i.imgur.com/YdTNrdU.png)
-- TEMPORARILY DISABLED [(EXPERIMENTAL) Face Enhancer](https://i.imgur.com/BH5VWqZ.png) - I added this function only because, as a ReActor user, I noticed that very often the face of the resulting images is slightly more "blurred" than the rest of the image, so thanks to this slider, it is possible to add a bit of sharpness only in the facial area, in order to make everything more homogeneous.
 ---
 
 #### Combinations Examples
