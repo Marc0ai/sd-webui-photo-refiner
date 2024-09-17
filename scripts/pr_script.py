@@ -1,11 +1,9 @@
-import modules.scripts as scripts
 import gradio as gr
-
+import os
+import modules.scripts as scripts
 from modules import images
-from modules.processing import process_images, Processed
-from modules.shared import opts, cmd_opts, state
-from scipy.ndimage import gaussian_filter
-
+from modules.shared import opts
+from modules.processing import Processed
 import cv2
 import numpy as np
 from PIL import Image, ImageEnhance, ImageChops, ImageFilter, ImageDraw
@@ -43,7 +41,6 @@ class Script(scripts.Script):
                 with gr.Accordion(label="Hints", elem_id="photo-refiner-hints", open=False) as accordion2:
                     gr.Markdown("### Wiki with examples: - https://github.com/Marc0ai/sd-webui-photo-refiner")
                 
-               
             def reset_sliders():
                 return [0] * 10
 
@@ -70,23 +67,15 @@ class Script(scripts.Script):
 
         return [pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
 
-    def apply_effects(self, im, pr_enabled, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
-
-        if isinstance(im, np.ndarray):
-            img = Image.fromarray(im)
-        else:
-            img = im  
+    def apply_effects(self, img, pr_enabled, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
+        if isinstance(img, np.ndarray):
+            img = Image.fromarray(img)
 
         if temperature_value != 0:
             img_np = np.array(img).astype(np.float32) / 255.0
-          
-            if temperature_value > 0:
-                img_np[..., 2] += temperature_value * 0.04
-                img_np[..., 1] += temperature_value * 0.1
-            else:
-                img_np[..., 2] += temperature_value * 0.04
-                img_np[..., 0] -= temperature_value * 0.04
-                
+            img_np[..., 2] += temperature_value * 0.04
+            img_np[..., 1] += temperature_value * 0.1 if temperature_value > 0 else img_np[..., 1] - temperature_value * 0.04
+            img_np[..., 0] -= temperature_value * 0.04 if temperature_value < 0 else 0
             img_np = np.clip(img_np, 0, 1)
             img = Image.fromarray((img_np * 255).astype(np.uint8))
 
@@ -138,13 +127,12 @@ class Script(scripts.Script):
         return img
 
     def postprocess(self, p, processed, pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, *args):
-
         if pr_enabled:
-
+            
+            output_dir = "output/photo_refiner_outputs"
+            os.makedirs(output_dir, exist_ok=True)
+            
             for i in range(len(processed.images)):
-                if state.interrupted:
-                    break
-
                 if isinstance(processed.images[i], np.ndarray):
                     processed_image = Image.fromarray(processed.images[i])
                 else:
@@ -166,3 +154,8 @@ class Script(scripts.Script):
                 )
 
                 processed.images[i] = np.array(processed_image)
+
+            for i, img_array in enumerate(processed.images):
+                img = Image.fromarray(img_array)
+                file_path = os.path.join(output_dir, f"output_image_{i}.png")
+                img.save(file_path)
