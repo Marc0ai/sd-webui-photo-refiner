@@ -13,16 +13,16 @@ class Script(scripts.Script):
 
     def title(self, enabled=False):
         if enabled:
-            return "Photo Refiner - Enabled"
+            return "Photo Refiner 1.2 - Enabled"
         else:
-            return "Photo Refiner"
+            return "Photo Refiner 1.2"
 
     def show(self, is_img2img):
         return scripts.AlwaysVisible
 
     def ui(self, is_img2img):
         with gr.Blocks() as demo:
-            with gr.Accordion(label=self.title(), elem_id="photo-refiner", open=False) as accordion:
+            with gr.Accordion(label=self.title(), elem_id="photo-refiner-12", open=False) as accordion:
                 pr_enabled = gr.Checkbox(value=False, label="Enable")
                 gr.Markdown("━━━━━━")
                 blur_intensity = gr.Slider(minimum=0, maximum=5, step=0.1, value=0, label="Blur")
@@ -34,18 +34,19 @@ class Script(scripts.Script):
                 highlights_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Highlights")
                 shadows_intensity = gr.Slider(minimum=-10, maximum=10, step=0.1, value=0, label="Shadows")
                 temperature_value = gr.Slider(minimum=-5, maximum=5, step=0.1, value=0, label="Temperature")
+                sepia_filter = gr.Checkbox(value=False, label="Sepia Efect")
                 film_grain = gr.Checkbox(value=False, label="Filmic Grain")
 
                 reset_button = gr.Button("Reset sliders")
 
-                with gr.Accordion(label="Hints", elem_id="photo-refiner-hints", open=False) as accordion2:
+                with gr.Accordion(label="Hints", elem_id="photo-refiner-hints-12", open=False) as accordion2:
                     gr.Markdown("### Wiki with examples: - https://github.com/Marc0ai/sd-webui-photo-refiner")
                 
             def reset_sliders():
                 return [0] * 10
 
             def update_title(pr_enabled):
-                new_title = "Photo Refiner - Enabled" if pr_enabled else "Photo Refiner"
+                new_title = "Photo Refiner 1.2 - Enabled" if pr_enabled else "Photo Refiner 1.2"
                 return gr.update(label=new_title)
 
             def on_reset_button_click():
@@ -65,9 +66,9 @@ class Script(scripts.Script):
 
             pr_enabled.change(fn=update_title, inputs=pr_enabled, outputs=accordion)
 
-        return [pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain]
+        return [pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, sepia_filter]
 
-    def apply_effects(self, img, pr_enabled, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain):
+    def apply_effects(self, img, pr_enabled, temperature_value, blur, sharpen, ca, saturation, contrast, brightness, highlights, shadows, film_grain, sepia_filter):
         if isinstance(img, np.ndarray):
             img = Image.fromarray(img)
 
@@ -123,10 +124,21 @@ class Script(scripts.Script):
             grain_img = grain_img.resize((img.width, img.height), Image.NEAREST)
             grain_img = grain_img.filter(ImageFilter.GaussianBlur(radius=0.7))
             img = Image.blend(img.convert('RGB'), grain_img.convert('RGB'), alpha=0.025)
+            
+        if sepia_filter:
+            img_np = np.array(img).astype(np.float32) / 255.0
+            sepia_effect = np.array(
+                [[0.393, 0.769, 0.189],
+                 [0.349, 0.686, 0.168],
+                 [0.272, 0.534, 0.131]]
+            )
+            img_np = img_np.dot(sepia_effect.T)
+            img_np = np.clip(img_np, 0, 1)
+            img = Image.fromarray((img_np * 255).astype(np.uint8))
 
         return img
 
-    def postprocess(self, p, processed, pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, *args):
+    def postprocess(self, p, processed, pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, sepia_filter, *args):
         if pr_enabled:
             
             output_dir = "output/photo_refiner_outputs"
@@ -150,7 +162,8 @@ class Script(scripts.Script):
                     brightness_intensity,
                     highlights_intensity,
                     shadows_intensity,
-                    film_grain
+                    film_grain,
+                    sepia_filter
                 )
 
                 processed.images[i] = np.array(processed_image)
