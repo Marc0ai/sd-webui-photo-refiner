@@ -12,7 +12,7 @@ Enjoy 👍
 - [Blur](https://i.imgur.com/9DqcNhr.png)
 - [Sharp](https://i.imgur.com/HdvO6J0.png)
 - [Chromatic Aberration](https://i.imgur.com/vszi1dg.png)
-- [Stauration](https://i.imgur.com/8U7dktc.png)
+- [Saturation](https://i.imgur.com/8U7dktc.png)
 - [Contrast](https://i.imgur.com/IYhVLdm.png)
 - [Brightness](https://i.imgur.com/NqP0xyw.png)
 - [Highlights](https://i.imgur.com/Ff249P6.png)
