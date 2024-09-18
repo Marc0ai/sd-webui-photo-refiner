@@ -4,21 +4,19 @@ In case of a large batch of images, you can find the results saved in "outputs/p
 Enjoy 👍
 
 ---
-### Available effects:
+### Current effects (v1.2):
 
-#### Original Image
-<img src="https://i.imgur.com/a1R3zgX.png" width="200"/> 
-
-- [Blur](https://i.imgur.com/9DqcNhr.png)
-- [Sharp](https://i.imgur.com/HdvO6J0.png)
-- [Chromatic Aberration](https://i.imgur.com/vszi1dg.png)
-- [Saturation](https://i.imgur.com/8U7dktc.png)
-- [Contrast](https://i.imgur.com/IYhVLdm.png)
-- [Brightness](https://i.imgur.com/NqP0xyw.png)
-- [Highlights](https://i.imgur.com/Ff249P6.png)
-- [Shadows](https://i.imgur.com/HiGoTtV.png)
-- [Temperature](https://i.imgur.com/T61MhiW.png)
-- [Filmic Grain](https://i.imgur.com/YdTNrdU.png)
+- Blur
+- Sharp
+- Chromatic Aberration
+- Saturation
+- Contrast
+- Brightness
+- Highlights
+- Shadows
+- Temperature
+- Filmic Grain
+- Sepia Tint
 ---
 
 #### Combinations Examples
