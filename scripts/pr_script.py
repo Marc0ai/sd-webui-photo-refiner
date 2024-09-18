@@ -7,7 +7,8 @@ from modules.processing import Processed
 import cv2
 import numpy as np
 from PIL import Image, ImageEnhance, ImageChops, ImageFilter, ImageDraw
-
+import random
+import string
 
 class Script(scripts.Script):
 
@@ -137,19 +138,22 @@ class Script(scripts.Script):
             img = Image.fromarray((img_np * 255).astype(np.uint8))
 
         return img
-
+        
+    def generate_unique_id(self, length=6):
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=length))      
+        
     def postprocess(self, p, processed, pr_enabled, temperature_value, blur_intensity, sharpen_intensity, chromatic_aberration, saturation_intensity, contrast_intensity, brightness_intensity, highlights_intensity, shadows_intensity, film_grain, sepia_filter, *args):
         if pr_enabled:
             
             output_dir = "output/photo_refiner_outputs"
             os.makedirs(output_dir, exist_ok=True)
-            
+    
             for i in range(len(processed.images)):
                 if isinstance(processed.images[i], np.ndarray):
                     processed_image = Image.fromarray(processed.images[i])
                 else:
                     processed_image = processed.images[i]
-
+    
                 processed_image = self.apply_effects(
                     processed_image,
                     pr_enabled,
@@ -165,10 +169,12 @@ class Script(scripts.Script):
                     film_grain,
                     sepia_filter
                 )
-
+    
                 processed.images[i] = np.array(processed_image)
-
+    
             for i, img_array in enumerate(processed.images):
                 img = Image.fromarray(img_array)
-                file_path = os.path.join(output_dir, f"refined_image_{i}.png")
+                unique_id = self.generate_unique_id()
+                file_path = os.path.join(output_dir, f"refined_image_{unique_id}.png")
                 img.save(file_path)
+    
