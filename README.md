@@ -9,6 +9,7 @@ Enjoy 👍
 
 - Blur
 - Sharp
+- Denoise
 - Chromatic Aberration
 - Saturation
 - Contrast
@@ -19,9 +20,3 @@ Enjoy 👍
 - Filmic Grain
 - Sepia Tint
 ---
-
-#### Combinations Examples
-
-<img src="https://i.imgur.com/aafcTw0.png" width="200"/> <img src="https://i.imgur.com/1cds2s6.png" width="200"/> <img src="https://i.imgur.com/SzPlVUM.png" width="200"/> 
-
-
