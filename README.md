@@ -5,7 +5,7 @@ All images are saved in "outputs/photo_refiner_outputs".
 Enjoy 👍
 
 ---
-### Current effects (v1.2):
+### Current effects (v2.0):
 
 - Blur
 - Sharp
